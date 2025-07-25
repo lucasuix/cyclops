@@ -1,0 +1,6 @@
+{   
+    "serialnumber": {},
+    "target": {"type": "float", "min": -58, "max": 58},
+    "last-seen": {"type": "datetime", "recent": 5},
+    "last-angle": { "angletolerance": 0.5 }
+}
