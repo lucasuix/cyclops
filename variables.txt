@@ -1,0 +1,15 @@
+# VARIÁVEIS QUE PRECISO ADICIONAR AO HARPIA
+# ESSES VARIÁVEIS SERÃO UM MACRO, OU SEJA,
+# PODEM SER ADICIONADAS PELO PROGRAMADOR EM NECESSIDADE
+
+HARPIA_GEOTIME -> Pega o tempo real baseado em Longitude e Latitude (aí não sei o que é melhor usar do model ou da usina)
+
+# Colocar variáveis também para model
+# ou seja se o Harpia ver uma variável do tipo
+MODEL_ -> Ele puxa a variável do modelo carregado
+
+Já se ele ver
+HARPIA_ -> Ele puxa algum método definido pelo usuário que retorna um valor 
+
+anyof -> Qualquer condição ali retorna true
+allof -> Todas tem que retornar True para funcionar

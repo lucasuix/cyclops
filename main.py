@@ -1,28 +1,56 @@
-from validator import Cyclops
-import os, json
-from datetime import datetime, timedelta
+from harpia import Harpia
+from model import Model
+from datetime import datetime
 
-def evaluate(reference, target):
-    """
-    Verifica o target com a referência
-    """
-    v = Cyclops(reference)
-    v.docs = target
-    return (v.validate(target), v.errors)
+# Uso uma class personalizada para definir os métodos personalizados
+class tcu_Harpia(Harpia):
 
-file_path = f"{os.getcwd()}\\Modelagem\\rules.json"
+	def _user_HARPIA_GEOTIME(self):
+		"""
+		Aqui eu vou devolver um datetime baseado na longitude e latitude,
+		coloquei um de exemplo apenas
+		"""
+		return datetime.now()
 
-# Buscar o arquivo de rules no banco de dados
-with open(file_path, "r") as file:
-    schemas = json.load(file)
+m = Model(
+		{
+		"serialnumber": "0225030209595",
+		"anemometro": 39
+		}
+	)
+f = tcu_Harpia(
+	{
+		"serialnumber": {
+			"0225030209898": {
+				"type_join": "u+",
+				"target": {"type": "float", "min": -53, "max": 53}
+			},
+			"0225030209595": {
+				"type_join": "u+",
+				"target": {"type": "float", "min": -52, "max": 52}
+			}
+		},
 
-# O que cada TCU retorna
-payload = {
-    "serialnumber": "0225030209999",
-    "target": 55,
-    "last-seen": datetime.now(),
-    "last-angle": 54.8
-}
+		# $ são condições personalizadas
+		# Aqui VARIABLE passa pelos conditions
+		# Se retornar True
+		# Aí sim aplicamos o rule
+		"$posicao-seguranca": {
+			"condition": {
+			# Problema aqui é que as duas tem que ser verdadeiras para retornar True, mas o ideal seria um OR
+				"anyof": {
+					"HARPIA_GEOTIME": {"type": "datetime", "min": datetime(2025, 7, 27, 13), "max": datetime(2025, 7, 27, 23)},
+					"MODEL_anemometro": {"type": "float", "min": 38}
+				}
+				# allof
+				# noneof
+			},
+			"rule": {
+				"type_join": "u+",
+				"angle": {"type": "float", "min": -26, "max": 26}   
+			}
+		}
+	}
+)
 
-
-print(evaluate(schemas, payload))
+f.verify(m)

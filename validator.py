@@ -62,3 +62,10 @@ class Cyclops(Validator):
         # Para poder acessar os valores do payload dentro da classe
         # Poupa ter que passar argumentos como listas quando comparar um que já existe na classe
         self.docs = docs
+
+def evaluate(reference, target):
+    """
+    Verifica o target com a referência
+    """
+    v = Cyclops(reference)
+    return (v.validate(target), v.errors)
