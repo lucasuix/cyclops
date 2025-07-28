@@ -13,3 +13,8 @@ HARPIA_ -> Ele puxa algum método definido pelo usuário que retorna um valor
 
 anyof -> Qualquer condição ali retorna true
 allof -> Todas tem que retornar True para funcionar
+
+
+SORT_<anyof, allof, noneof> -> Operações lógicas com os erros
+HARPIA_<nome-do-metodo> -> Retorna um valor qualquer de um método definido pelo usuário
+MODEL_<atributo> -> Retorna o valor de um campo dos dados do model

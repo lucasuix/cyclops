@@ -1,21 +1,31 @@
-from harpia import Harpia
-from model import Model
-from datetime import datetime
+from harpia.harpia import Harpia
+from harpia.model import Model
+from datetime import datetime, date
+
+from astral import LocationInfo
+from astral.sun import sun
 
 # Uso uma class personalizada para definir os métodos personalizados
 class tcu_Harpia(Harpia):
 
-	def _user_HARPIA_GEOTIME(self):
-		"""
-		Aqui eu vou devolver um datetime baseado na longitude e latitude,
-		coloquei um de exemplo apenas
-		"""
+	def _HARPIA_GEOTIME(self):
+		# Obter o valor do horário baseado na latitude e longitude do model
 		return datetime.now()
 
 m = Model(
 		{
-		"serialnumber": "0225030209595",
-		"anemometro": 39
+			"serialnumber": "0225030209898",
+			"anemometro": 48,
+			"last-seen": datetime.now(),
+			"last-angle": 42.0,
+			"target": 55
+		},
+		{	# Ruleset geral
+			"serialnumber": {},
+			"target": {"type": "float", "min": -58, "max": 58},
+			"last-seen": {"type": "datetime", "recent": 5},
+			"last-angle": {"type": "float", "angletolerance": 0.5 },
+			"anemometro": {}
 		}
 	)
 f = tcu_Harpia(
@@ -31,26 +41,18 @@ f = tcu_Harpia(
 			}
 		},
 
-		# $ são condições personalizadas
-		# Aqui VARIABLE passa pelos conditions
-		# Se retornar True
-		# Aí sim aplicamos o rule
 		"$posicao-seguranca": {
-			"condition": {
-			# Problema aqui é que as duas tem que ser verdadeiras para retornar True, mas o ideal seria um OR
-				"anyof": {
-					"HARPIA_GEOTIME": {"type": "datetime", "min": datetime(2025, 7, 27, 13), "max": datetime(2025, 7, 27, 23)},
-					"MODEL_anemometro": {"type": "float", "min": 38}
-				}
-				# allof
-				# noneof
+			"SORT_anyof": {
+				"HARPIA_GEOTIME": {"type": "datetime", "min": datetime(2025, 7, 27, 16), "max": datetime(2025, 7, 28, 6)},
+				"MODEL_anemometro": {"type": "float", "min": 38}
 			},
 			"rule": {
 				"type_join": "u+",
-				"angle": {"type": "float", "min": -26, "max": 26}   
+				"last-angle": {"type": "float", "min": -26, "max": 26}   
 			}
 		}
 	}
 )
 
-f.verify(m)
+f.adjust_rules(m)
+m.verify()
